@@ -13,7 +13,7 @@ public class DrugDAO implements DrugDAOInterface {
     
     @Override
         public void addDrug(Drug drug) {
-            String sql = "INSERT INTO drugs ( drugCode ,name, description, price, stock) VALUES ( ?, ?, ?, ?, ?)";
+            String sql = "INSERT INTO drugs ( drug_code ,name, description, price, stock) VALUES ( ?, ?, ?, ?, ?)";
             try (Connection connection = DatabaseConnection.getConnection();
                  PreparedStatement statement = connection.prepareStatement(sql)) {
                 statement.setString(1, drug.getDrugCode());

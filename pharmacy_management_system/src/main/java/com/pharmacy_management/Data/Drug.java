@@ -2,8 +2,8 @@ package com.pharmacy_management.Data;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 import java.util.TreeMap;
-import java.util.UUID;
 
 public class Drug {
     private String drugCode;
@@ -15,7 +15,7 @@ public class Drug {
     private TreeMap<Date, Purchase> purchaseHistory;
 
     public Drug(String name, String description, double price, int stock, List<Supplier> suppliers) {
-        this.drugCode = UUID.randomUUID().toString();
+        this.drugCode = generateRandomCode(5);
         this.name = name;
         this.description = description;
         this.price = price;
@@ -23,6 +23,16 @@ public class Drug {
         this.suppliers = suppliers;
     }
 
+    // Generate a random alphanumeric string of a given length
+    private String generateRandomCode(int length) {
+        String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        Random random = new Random();
+        StringBuilder code = new StringBuilder(length);
+        for (int i = 0; i < length; i++) {
+            code.append(characters.charAt(random.nextInt(characters.length())));
+        }
+        return code.toString();
+    }
     public String getDrugCode() {
         return drugCode;
     }

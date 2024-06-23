@@ -24,6 +24,12 @@ public class PharmacyManagementSystem {
         sales = new LinkedList<>();
         drugDAO = new DrugDAO();
         supplierDAO = new SupplierDAO();
+
+        try {
+            Class.forName("org.postgresql.Driver");
+        } catch (ClassNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     public void addDrug(Drug drug) {

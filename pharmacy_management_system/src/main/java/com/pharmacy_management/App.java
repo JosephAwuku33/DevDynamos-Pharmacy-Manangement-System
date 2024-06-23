@@ -20,7 +20,8 @@ public class App {
                 System.out.println("1. View all drugs and their suppliers");
                 System.out.println("2. View purchase history for each drug");
                 System.out.println("3. Add a new drug");
-                System.out.println("4. Exit");
+                System.out.println("4. Search for a drug");
+                System.out.println("5. Exit");
 
                 choice = scanner.nextInt();
 
@@ -35,7 +36,7 @@ public class App {
                             for (Supplier supplier : drug.getSuppliers()) {
                                 System.out.print(supplier.getName() + " (" + supplier.getLocation() + "), ");
                             }
-                            System.out.println();  // New line after each drug
+                            System.out.println(); // New line after each drug
                         }
                         break;
                     case 2:
@@ -45,7 +46,7 @@ public class App {
                     case 3:
                         try {
                             // Code to add a new drug
-                            scanner.nextLine();  // Consume the leftover newline
+                            scanner.nextLine(); // Consume the leftover newline
                             System.out.println("Enter the drug name:");
                             String name = scanner.nextLine();
 
@@ -58,7 +59,7 @@ public class App {
                             System.out.println("Enter the drug stock:");
                             int stock = scanner.nextInt();
 
-                            scanner.nextLine();  // Consume the leftover newline
+                            scanner.nextLine(); // Consume the leftover newline
 
                             System.out.println("Enter the supplier's name:");
                             String supplierName = scanner.nextLine();
@@ -78,13 +79,39 @@ public class App {
                         }
                         break;
                     case 4:
+                        // Code to search for a drug
+                        try {
+                            scanner.nextLine(); // Consume the leftover newline
+                            System.out.println("Enter the drug code:");
+                            String drugCode = scanner.nextLine();
+
+                            Drug drug = pharmacyManagementSystem.searchDrug(drugCode);
+                            if (drug != null) {
+                                System.out.println("Drug found: ");
+                                System.out.println("Drug Code: " + drug.getDrugCode());
+                                System.out.println("Name: " + drug.getName());
+                                System.out.println("Description: " + drug.getDescription());
+                                System.out.println("Price: " + drug.getPrice());
+                                System.out.println("Stock: " + drug.getStock());
+                                System.out.println("Suppliers: ");
+                                for (Supplier supplier : drug.getSuppliers()) {
+                                    System.out.println(" - " + supplier.getName() + " (" + supplier.getLocation() + ")");
+                                }
+                            } else {
+                                System.out.println("Drug with code " + drugCode + " not found.");
+                            }
+                        } catch (Exception e) {
+                            System.out.println("An error occurred: " + e.getMessage());
+                        }
+                        break;
+                    case 5:
                         System.out.println("Exiting...");
                         break;
                     default:
                         System.out.println("Invalid choice. Please try again.");
                         break;
                 }
-            } while (choice != 4);
+            } while (choice != 5);
         }
     }
 }
