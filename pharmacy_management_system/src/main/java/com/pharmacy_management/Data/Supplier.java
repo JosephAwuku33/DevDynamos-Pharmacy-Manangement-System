@@ -1,12 +1,13 @@
 package com.pharmacy_management.Data;
+import java.util.UUID;
 
 public class Supplier {
     private String supplierID;
     private String name;
     private String location;
     
-    public Supplier(String supplierID, String name, String location) {
-        this.supplierID = supplierID;
+    public Supplier( String name, String location) {
+        this.supplierID = UUID.randomUUID().toString();
         this.name = name;
         this.location = location;
     }
@@ -33,6 +34,11 @@ public class Supplier {
 
     public void setLocation(String location) {
         this.location = location;
+    }
+
+    @Override
+    public String toString() {
+        return "Supplier{name='" + name + "', location='" + location + "'}";
     }
 
     

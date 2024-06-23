@@ -3,6 +3,7 @@ package com.pharmacy_management.Data;
 import java.util.Date;
 import java.util.List;
 import java.util.TreeMap;
+import java.util.UUID;
 
 public class Drug {
     private String drugCode;
@@ -13,15 +14,13 @@ public class Drug {
     private List<Supplier> suppliers;
     private TreeMap<Date, Purchase> purchaseHistory;
 
-
-    public Drug(String drugCode, String name, String description, double price, int stock, List<Supplier> suppliers, TreeMap<Date, Purchase> purchaseHistory) {
-        this.drugCode = drugCode;
+    public Drug(String name, String description, double price, int stock, List<Supplier> suppliers) {
+        this.drugCode = UUID.randomUUID().toString();
         this.name = name;
         this.description = description;
         this.price = price;
         this.stock = stock;
         this.suppliers = suppliers;
-        this.purchaseHistory = purchaseHistory;
     }
 
     public String getDrugCode() {
@@ -103,6 +102,5 @@ public class Drug {
     public void updateDescription(String newDescription) {
         description = newDescription;
     }
-    
-}
 
+}

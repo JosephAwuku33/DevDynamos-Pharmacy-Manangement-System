@@ -1,12 +1,14 @@
 package com.pharmacy_management.Data;
 
+import java.util.UUID;
+
 public class Customer {
     private String customerID;
     private String name;
     private String contactInfo;
 
     public Customer(String customerID, String name, String contactInfo) {
-        this.customerID = customerID;
+        this.customerID = UUID.randomUUID().toString();
         this.name = name;
         this.contactInfo = contactInfo;
     }

@@ -4,19 +4,16 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.TreeMap;
 
 import com.pharmacy_management.Data.Drug;
-import com.pharmacy_management.Data.Purchase;
 import com.pharmacy_management.Data.Supplier;
 import com.pharmacy_management.Database.DatabaseConnection;
 public class DrugDAO implements DrugDAOInterface {
     
     @Override
         public void addDrug(Drug drug) {
-            String sql = "INSERT INTO drugs (drug_code, name, description, price, stock) VALUES (?, ?, ?, ?, ?)";
+            String sql = "INSERT INTO drugs ( drugCode ,name, description, price, stock) VALUES ( ?, ?, ?, ?, ?)";
             try (Connection connection = DatabaseConnection.getConnection();
                  PreparedStatement statement = connection.prepareStatement(sql)) {
                 statement.setString(1, drug.getDrugCode());
@@ -45,8 +42,8 @@ public class DrugDAO implements DrugDAOInterface {
                     int stock = resultSet.getInt("stock");
                     // Assuming Supplier and Purchase objects are handled elsewhere
                     List<Supplier> suppliers = new ArrayList<>(); // Placeholder
-                    TreeMap<Date, Purchase> purchaseHistory = new TreeMap<>(); // Placeholder
-                    return new Drug(drugCode, name, description, price, stock, suppliers, purchaseHistory);
+                    // TreeMap<Date, Purchase> purchaseHistory = new TreeMap<>(); // Placeholder
+                    return new Drug( name, description, price, stock, suppliers);
                 }
             } catch (SQLException e) {
                 System.out.print("Error" + " " + e.getMessage());
@@ -62,15 +59,14 @@ public class DrugDAO implements DrugDAOInterface {
                  PreparedStatement statement = connection.prepareStatement(sql);
                  ResultSet resultSet = statement.executeQuery()) {
                 while (resultSet.next()) {
-                    String drugCode = resultSet.getString("drug_code");
                     String name = resultSet.getString("name");
                     String description = resultSet.getString("description");
                     double price = resultSet.getDouble("price");
                     int stock = resultSet.getInt("stock");
                     // Assuming Supplier and Purchase objects are handled elsewhere
                     List<Supplier> suppliers = new ArrayList<>(); // Placeholder
-                    TreeMap<Date, Purchase> purchaseHistory = new TreeMap<>(); // Placeholder
-                    drugs.add(new Drug(drugCode, name, description, price, stock, suppliers, purchaseHistory));
+                    // TreeMap<Date, Purchase> purchaseHistory = new TreeMap<>(); // Placeholder
+                    drugs.add(new Drug( name, description, price, stock, suppliers));
                 }
             } catch (SQLException e) {
                 System.out.print("Error" + " " + e.getMessage());

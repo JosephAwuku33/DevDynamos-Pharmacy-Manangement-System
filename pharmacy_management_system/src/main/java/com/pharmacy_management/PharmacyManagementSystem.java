@@ -8,51 +8,92 @@ import java.util.Queue;
 
 import com.pharmacy_management.Data.Drug;
 import com.pharmacy_management.Data.Supplier;
+import com.pharmacy_management.DataAccessObject.Drug.DrugDAO;
+import com.pharmacy_management.DataAccessObject.Supplier.SupplierDAO;
 
 public class PharmacyManagementSystem {
     private HashMap<String, Drug> drugs;
     private HashMap<String, Supplier> suppliers;
     private Queue<String> sales;
+    private final DrugDAO drugDAO;
+    private final SupplierDAO supplierDAO;
 
     public PharmacyManagementSystem() {
         drugs = new HashMap<>();
         suppliers = new HashMap<>();
         sales = new LinkedList<>();
+        drugDAO = new DrugDAO();
+        supplierDAO = new SupplierDAO();
     }
 
     public void addDrug(Drug drug) {
-        drugs.put(drug.getDrugCode(), drug);
+        try {
+            drugs.put(drug.getDrugCode(), drug);
+            drugDAO.addDrug(drug); // Add to database
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+        }
     }
 
     public Drug searchDrug(String drugCode) {
-        return drugs.get(drugCode);
+        Drug drug = drugs.get(drugCode);
+        if (drug == null) {
+            drug = drugDAO.getDrugByCode(drugCode); // Search in database if not found in local map
+            if (drug != null) {
+                drugs.put(drugCode, drug); // Cache it locally
+            }
+        }
+        return drug;
     }
 
     public List<Drug> viewAllDrugs() {
+        if (drugs.isEmpty()) {
+            List<Drug> allDrugs = drugDAO.getAllDrugs(); // Fetch all from database
+            for (Drug drug : allDrugs) {
+                drugs.put(drug.getDrugCode(), drug); // Cache locally
+            }
+        }
         return new ArrayList<>(drugs.values());
     }
 
     public void recordSale(String drugCode) {
         sales.add(drugCode);
+        // You might want to persist sales data as well using a DAO
     }
-    
-    // Additional methods for purchase history and suppliers
+
     public void addSupplier(Supplier supplier) {
         suppliers.put(supplier.getSupplierID(), supplier);
+        supplierDAO.addSupplier(supplier); // Add to database
     }
 
     public Supplier searchSupplier(String supplierID) {
-        return suppliers.get(supplierID);
+        Supplier supplier = suppliers.get(supplierID);
+        if (supplier == null) {
+            supplier = supplierDAO.getSupplierById(supplierID); // Search in database if not found in local map
+            if (supplier != null) {
+                suppliers.put(supplierID, supplier); // Cache it locally
+            }
+        }
+        return supplier;
     }
 
     public List<Supplier> viewAllSuppliers() {
+        if (suppliers.isEmpty()) {
+            List<Supplier> allSuppliers = supplierDAO.getAllSuppliers(); // Fetch all from database
+            for (Supplier supplier : allSuppliers) {
+                suppliers.put(supplier.getSupplierID(), supplier); // Cache locally
+            }
+        }
         return new ArrayList<>(suppliers.values());
     }
 
     public void recordPurchase(String drugCode, String supplierID) {
-        Drug drug = drugs.get(drugCode);
-        Supplier supplier = suppliers.get(supplierID);
-        drug.getSuppliers().add(supplier);
+        Drug drug = searchDrug(drugCode);
+        Supplier supplier = searchSupplier(supplierID);
+        if (drug != null && supplier != null) {
+            drug.getSuppliers().add(supplier);
+            drugDAO.updateDrug(drug); // Update drug in database with new supplier info
+        }
     }
 
     public Queue<String> getSales() {
@@ -78,6 +119,4 @@ public class PharmacyManagementSystem {
     public void setSuppliers(HashMap<String, Supplier> suppliers) {
         this.suppliers = suppliers;
     }
-
-
 }

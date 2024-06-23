@@ -22,15 +22,15 @@ public class DatabaseConnection {
         return connection;
     }
 
-    public static void closeConnection() {
-        if (connection != null) {
-            try {
-                connection.close();
-                connection = null;
-                System.out.println("Database connection closed.");
-            } catch (SQLException e) {
-                System.out.println("Error closing the database connection." + e.getMessage());
-            }
-        }
-    }
+    // public static void closeConnection() {
+    //     if (connection != null) {
+    //         try {
+    //             connection.close();
+    //             connection = null;
+    //             System.out.println("Database connection closed.");
+    //         } catch (SQLException e) {
+    //             System.out.println("Error closing the database connection." + e.getMessage());
+    //         }
+    //     }
+    // }
 }
