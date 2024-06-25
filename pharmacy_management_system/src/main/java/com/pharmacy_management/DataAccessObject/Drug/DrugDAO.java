@@ -13,7 +13,7 @@ public class DrugDAO implements DrugDAOInterface {
     
     @Override
         public void addDrug(Drug drug) {
-            String sql = "INSERT INTO drugs ( drug_code ,name, description, price, stock) VALUES ( ?, ?, ?, ?, ?)";
+            String sql = "INSERT INTO drugs ( drug_code ,name, description, price, stock, supplier_name, supplier_location ) VALUES ( ?, ?, ?, ?, ?, ?, ?)";
             try (Connection connection = DatabaseConnection.getConnection();
                  PreparedStatement statement = connection.prepareStatement(sql)) {
                 statement.setString(1, drug.getDrugCode());
@@ -21,6 +21,8 @@ public class DrugDAO implements DrugDAOInterface {
                 statement.setString(3, drug.getDescription());
                 statement.setDouble(4, drug.getPrice());
                 statement.setInt(5, drug.getStock());
+                statement.setString(6, drug.getSuppliers().get(0).getName());
+                statement.setString(7, drug.getSuppliers().get(0).getLocation());
                 statement.executeUpdate();
                 System.out.println("Drug added successfully!");
             } catch (SQLException e) {
@@ -40,8 +42,10 @@ public class DrugDAO implements DrugDAOInterface {
                     String description = resultSet.getString("description");
                     double price = resultSet.getDouble("price");
                     int stock = resultSet.getInt("stock");
-                    // Assuming Supplier and Purchase objects are handled elsewhere
+                    String supplierName = resultSet.getString("supplier_name");
+                    String supplierLocation = resultSet.getString("supplier_location");
                     List<Supplier> suppliers = new ArrayList<>(); // Placeholder
+                    suppliers.add(new Supplier(supplierName, supplierLocation));
                     // TreeMap<Date, Purchase> purchaseHistory = new TreeMap<>(); // Placeholder
                     return new Drug( name, description, price, stock, suppliers);
                 }
@@ -63,8 +67,10 @@ public class DrugDAO implements DrugDAOInterface {
                     String description = resultSet.getString("description");
                     double price = resultSet.getDouble("price");
                     int stock = resultSet.getInt("stock");
-                    // Assuming Supplier and Purchase objects are handled elsewhere
+                    String supplierName = resultSet.getString("supplier_name");
+                    String supplierLocation = resultSet.getString("supplier_location");
                     List<Supplier> suppliers = new ArrayList<>(); // Placeholder
+                    suppliers.add(new Supplier(supplierName, supplierLocation));
                     // TreeMap<Date, Purchase> purchaseHistory = new TreeMap<>(); // Placeholder
                     drugs.add(new Drug( name, description, price, stock, suppliers));
                 }
