@@ -9,6 +9,7 @@ import com.pharmacy_management.Data.Supplier;
 
 public class App {
     public static void main(String[] args) {
+        GUI.main(args);
         System.out.println("Welcome to Pharmacy Management System!");
         PharmacyManagementSystem pharmacyManagementSystem = new PharmacyManagementSystem();
 
