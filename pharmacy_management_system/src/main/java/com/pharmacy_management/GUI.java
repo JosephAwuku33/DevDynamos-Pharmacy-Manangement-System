@@ -1,4 +1,5 @@
 package com.pharmacy_management;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -6,19 +7,20 @@ import com.pharmacy_management.Data.Drug;
 import com.pharmacy_management.Data.Supplier;
 
 import javafx.application.Application;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-
-
-
 
 public class GUI extends Application {
     private final PharmacyManagementSystem pharmacyManagementSystem = new PharmacyManagementSystem();
@@ -36,8 +38,9 @@ public class GUI extends Application {
         Button viewDrugsButton = new Button("View all drugs and their suppliers");
         Button addDrugButton = new Button("Add a new drug");
         Button searchDrugButton = new Button("Search for a drug");
+        Button generateReportButton = new Button("Generate Report");
 
-        mainLayout.getChildren().addAll(menuLabel, viewDrugsButton, addDrugButton, searchDrugButton);
+        mainLayout.getChildren().addAll(menuLabel, viewDrugsButton, addDrugButton, searchDrugButton, generateReportButton);
 
         // View Drugs Scene
         VBox viewDrugsLayout = new VBox(10);
@@ -94,6 +97,45 @@ public class GUI extends Application {
         searchDrugLayout.add(backFromSearchDrugButton, 0, 2);
         Scene searchDrugScene = new Scene(searchDrugLayout, 400, 300);
 
+        // Report Scene
+        VBox reportLayout = new VBox(10);
+        reportLayout.setPadding(new Insets(10));
+        TableView<Drug> reportTableView = new TableView<>();
+        Button backFromReportButton = new Button("Back to Menu");
+        reportLayout.getChildren().addAll(reportTableView, backFromReportButton);
+        Scene reportScene = new Scene(reportLayout, 600, 400);
+
+        // Configure the TableView for the report
+        TableColumn<Drug, String> drugCodeColumn = new TableColumn<>("Drug Code");
+        drugCodeColumn.setCellValueFactory(cellData -> new javafx.beans.property.SimpleStringProperty(cellData.getValue().getDrugCode()));
+
+        TableColumn<Drug, String> drugNameColumn = new TableColumn<>("Drug Name");
+        drugNameColumn.setCellValueFactory(cellData -> new javafx.beans.property.SimpleStringProperty(cellData.getValue().getName()));
+
+        TableColumn<Drug, Double> priceColumn = new TableColumn<>("Price");
+        priceColumn.setCellValueFactory(cellData -> new javafx.beans.property.SimpleObjectProperty<>(cellData.getValue().getPrice()));
+
+        TableColumn<Drug, Integer> stockColumn = new TableColumn<>("Stock");
+        stockColumn.setCellValueFactory(cellData -> new javafx.beans.property.SimpleObjectProperty<>(cellData.getValue().getStock()));
+
+        TableColumn<Drug, String> suppliersColumn = new TableColumn<>("Suppliers");
+        suppliersColumn.setCellValueFactory(cellData -> {
+            List<Supplier> suppliers = cellData.getValue().getSuppliers();
+            StringBuilder supplierNames = new StringBuilder();
+            for (Supplier supplier : suppliers) {
+                supplierNames.append(supplier.getName()).append(" (").append(supplier.getLocation()).append("), ");
+            }
+            return new javafx.beans.property.SimpleStringProperty(supplierNames.toString());
+        });
+
+        List<TableColumn<Drug, ?>> columns = new ArrayList<>();
+        columns.add(drugCodeColumn);
+        columns.add(drugNameColumn);
+        columns.add(priceColumn);
+        columns.add(stockColumn);
+        columns.add(suppliersColumn);
+        reportTableView.getColumns().addAll(columns);
+
         // Main Scene
         Scene mainScene = new Scene(mainLayout, 400, 300);
 
@@ -115,6 +157,12 @@ public class GUI extends Application {
         backFromAddDrugButton.setOnAction(e -> extracted(primaryStage, mainScene));
         searchDrugButton.setOnAction(e -> extracted(primaryStage, searchDrugScene));
         backFromSearchDrugButton.setOnAction(e -> extracted(primaryStage, mainScene));
+        generateReportButton.setOnAction(e -> {
+            ObservableList<Drug> drugReports = FXCollections.observableArrayList(pharmacyManagementSystem.viewAllDrugs());
+            reportTableView.setItems(drugReports);
+            extracted(primaryStage, reportScene);
+        });
+        backFromReportButton.setOnAction(e -> extracted(primaryStage, mainScene));
 
         saveDrugButton.setOnAction(e -> {
             String name = nameField.getText();
